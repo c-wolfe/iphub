@@ -14,14 +14,17 @@
     public const RESIDENTIAL = 0;
     public const NON_RESIDENTIAL = 1;
     public const NON_RESIDENTIAL_AND_RESIDENTIAL = 2;
+    
     /**
      * @var string
      */
     private static $key;
+    
     /**
      * @var Client
      */
     private $predis;
+    
     /**
      * @var string
      */
@@ -62,7 +65,7 @@
     public function getIpLevel($ip) {
       
       if (!$this->predis->isConnected()) {
-        $this->connect();
+        $this->predis->connect();
       }
       
       if ($this->existsInCache($ip)) {
@@ -95,14 +98,7 @@
         
       }
       
-      throw new Exception();
-    }
-    
-    /**
-     * Connect to Redis
-     */
-    public function connect() {
-      $this->predis->connect();
+      return 0;
     }
     
     /**
