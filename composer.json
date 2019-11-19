@@ -1,0 +1,21 @@
+{
+  "name": "cwolfe/iphub",
+  "description": "VPN/Proxy Detection API with Redis caching",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Cameron Wolfe",
+      "email": "cameron@osenit.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.9",
+    "predis/predis": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "CWolfe\\IPHub\\": "src/"
+    }
+  }
+}
