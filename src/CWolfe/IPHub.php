@@ -45,11 +45,16 @@
     /**
      * @param string $ip
      * @param int $blevel
+     * @param bool $strict
      * @return bool Whether the IP should be allowed or not
-     * @throws RatelimitException
      */
-    public function isAllowed($ip, $blevel = IPHub::RESIDENTIAL) {
-      $level = $this->getIpLevel($ip);
+    public function isAllowed($ip, $blevel = IPHub::RESIDENTIAL, $strict = false) {
+      try {
+        $level = $this->getIpLevel($ip);
+      } catch (Exception $exception) {
+        return !$strict;
+      }
+      
       if ($level == IPHub::NON_RESIDENTIAL) {
         return $level == IPHub::NON_RESIDENTIAL || $blevel == IPHub::RESIDENTIAL;
       }
