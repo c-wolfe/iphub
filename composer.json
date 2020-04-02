@@ -1,7 +1,7 @@
 {
   "name": "cwolfe/iphub",
   "description": "VPN/Proxy Detection API with Redis caching",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "library",
   "license": "MIT",
   "authors": [
