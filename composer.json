@@ -12,7 +12,9 @@
   ],
   "require": {
     "php": ">=5.3.9",
-    "predis/predis": "*"
+    "predis/predis": "*",
+    "ext-curl": "*",
+    "ext-json": "*"
   },
   "autoload": {
     "psr-4": {

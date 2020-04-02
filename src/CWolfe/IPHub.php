@@ -50,7 +50,7 @@
      */
     public function isAllowed($ip, $blevel = IPHub::RESIDENTIAL, $strict = false) {
       try {
-        $level = $this->getIpLevel($ip);
+        $level = $this->getIpInformation($ip)['block'];
       } catch (Exception $exception) {
         return !$strict;
       }
@@ -62,19 +62,19 @@
     }
     
     /**
-     * @param $ip
-     * @return int
+     * @param string $ip
+     * @return array
      * @throws RatelimitException
      * @throws Exception
      */
-    public function getIpLevel($ip) {
+    public function getIpInformation($ip) {
       
       if (!$this->predis->isConnected()) {
         $this->predis->connect();
       }
       
       if ($this->existsInCache($ip)) {
-        return $this->predis->get($ip);
+        return json_decode($this->predis->get("$this->prefix:$ip"), true);
       } else {
         
         $ch = curl_init();
@@ -91,9 +91,9 @@
           if ($responseHttpCode == 200) {
             $responseObject = json_decode($response);
             
-            if (isset($responseObject->block)) {
-              $this->pushToCache($ip, $responseObject->block);
-              return $responseObject->block;
+            if (isset($responseObject->ip)) {
+              $this->pushToCache($ip, $responseObject);
+              return $responseObject;
             }
             
           } else if ($responseHttpCode == 429) {
@@ -103,7 +103,7 @@
         
       }
       
-      return 0;
+      return [];
     }
     
     /**
@@ -116,15 +116,104 @@
     
     /**
      * @param string $ip
-     * @param int $level
+     * @param array $information
      * @param int $ttl
      */
-    public function pushToCache($ip, $level, $ttl = 3600) {
-      $this->predis->set("$this->prefix:$ip", $level, 'EX', $ttl);
+    public function pushToCache($ip, $information, $ttl = 3600) {
+      $this->predis->set("$this->prefix:$ip", json_encode($information), 'EX', $ttl);
     }
     
     /**
-     * @param $ip
+     * @param string $ip
+     * @return int
+     * @throws RatelimitException
+     * @deprecated
+     */
+    public function getIpLevel($ip) {
+      return $this->getLevel($ip);
+    }
+    
+    
+    /**
+     * @param string $ip
+     * @return int
+     * @throws RatelimitException
+     */
+    public function getLevel($ip) {
+      $information = $this->getIpInformation($ip);
+      if (is_array($information) && isset($information['block'])) {
+        return $information['block'];
+      }
+      return 0;
+    }
+    
+    /**
+     * @param string $ip
+     * @return string
+     * @throws RatelimitException
+     */
+    public function getCountryCode($ip) {
+      $information = $this->getIpInformation($ip);
+      if (is_array($information) && isset($information['countryCode'])) {
+        return $information['countryCode'];
+      }
+      return 0;
+    }
+    
+    /**
+     * @param string $ip
+     * @return string
+     * @throws RatelimitException
+     */
+    public function getCountryName($ip) {
+      $information = $this->getIpInformation($ip);
+      if (is_array($information) && isset($information['countryName'])) {
+        return $information['countryName'];
+      }
+      return 0;
+    }
+    
+    /**
+     * @param string $ip
+     * @return string
+     * @throws RatelimitException
+     */
+    public function getASN($ip) {
+      $information = $this->getIpInformation($ip);
+      if (is_array($information) && isset($information['asn'])) {
+        return $information['asn'];
+      }
+      return 0;
+    }
+    
+    /**
+     * @param string $ip
+     * @return string
+     * @throws RatelimitException
+     */
+    public function getISP($ip) {
+      $information = $this->getIpInformation($ip);
+      if (is_array($information) && isset($information['isp'])) {
+        return $information['isp'];
+      }
+      return 0;
+    }
+    
+    /**
+     * @param string $ip
+     * @return string
+     * @throws RatelimitException
+     */
+    public function getHostname($ip) {
+      $information = $this->getIpInformation($ip);
+      if (is_array($information) && isset($information['hostname'])) {
+        return $information['hostname'];
+      }
+      return 0;
+    }
+    
+    /**
+     * @param string $ip
      */
     public function removeFromCache($ip) {
       $this->predis->del(["$this->prefix:$ip"]);
