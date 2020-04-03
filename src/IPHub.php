@@ -74,7 +74,7 @@
       }
       
       if ($this->existsInCache($ip)) {
-        return json_decode($this->predis->get("$this->prefix:$ip"), true);
+        return json_decode($this->predis->get("$this->prefix:$ip"));
       } else {
         
         $ch = curl_init();
@@ -141,8 +141,8 @@
      */
     public function getLevel($ip) {
       $information = $this->getIpInformation($ip);
-      if (is_array($information) && isset($information['block'])) {
-        return $information['block'];
+      if (is_array($information) && isset($information->block)) {
+        return $information->block;
       }
       return 0;
     }
@@ -154,8 +154,8 @@
      */
     public function getCountryCode($ip) {
       $information = $this->getIpInformation($ip);
-      if (is_array($information) && isset($information['countryCode'])) {
-        return $information['countryCode'];
+      if (is_array($information) && isset($information->countryCode)) {
+        return $information->countryCode;
       }
       return 0;
     }
@@ -167,8 +167,8 @@
      */
     public function getCountryName($ip) {
       $information = $this->getIpInformation($ip);
-      if (is_array($information) && isset($information['countryName'])) {
-        return $information['countryName'];
+      if (is_array($information) && isset($information->countryName)) {
+        return $information->countryName;
       }
       return 0;
     }
@@ -180,8 +180,8 @@
      */
     public function getASN($ip) {
       $information = $this->getIpInformation($ip);
-      if (is_array($information) && isset($information['asn'])) {
-        return $information['asn'];
+      if (is_array($information) && isset($information->asn)) {
+        return $information->asn;
       }
       return 0;
     }
@@ -193,8 +193,8 @@
      */
     public function getISP($ip) {
       $information = $this->getIpInformation($ip);
-      if (is_array($information) && isset($information['isp'])) {
-        return $information['isp'];
+      if (is_array($information) && isset($information->isp)) {
+        return $information->isp;
       }
       return 0;
     }
@@ -206,8 +206,8 @@
      */
     public function getHostname($ip) {
       $information = $this->getIpInformation($ip);
-      if (is_array($information) && isset($information['hostname'])) {
-        return $information['hostname'];
+      if (is_array($information) && isset($information->hostname)) {
+        return $information->hostname;
       }
       return 0;
     }
