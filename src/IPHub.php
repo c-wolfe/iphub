@@ -74,7 +74,7 @@
       }
       
       if ($this->existsInCache($ip)) {
-        return json_decode($this->predis->get("$this->prefix:$ip"), true);
+        return json_decode($this->predis->get("$this->prefix:$ip"));
       } else {
         
         $ch = curl_init();
